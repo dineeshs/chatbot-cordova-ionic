@@ -1,14 +1,55 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
-  </ion-navbar>
-</ion-header>
+    <ion-toolbar color=primary>
+      <ion-title>Haisy</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+  
+
+
+
+
+<ion-content>
+<br>
+    <div id="container" *ngFor="let message of messages">
+        <div class="message" [ngClass]="{ 'from': message.sentBy === 'bot',
+                                          'to':   message.sentBy === 'user' }">
+                                          
+          {{ message.content }}
+          
+        
+        </div>
+        <div *ngIf="message.title != ''">
+        <ion-card>
+  <img src="{{ message.image }}"/>
+  
+    <ion-card-content>
+    <ion-card-title>
+      {{message.title}}
+      </ion-card-title>
+    <p>
+      {{message.content}}
+    </p>
+  </ion-card-content>
+  <button ion-button full>{{message.button}}</button>
+</ion-card>
+  </div>
+  
+      </div>
+    
+
 </ion-content>
+
+<ion-footer>
+    <ion-item>
+      <button ion-button class="customBtn" round icon-only item-start (click)="startVoice()">
+        <ion-icon name="md-mic"></ion-icon>
+      </button>
+        <ion-input type="text" placeholder="Your Message" [(ngModel)]="question" (keyup.enter)="ask(question)"></ion-input>
+        <button ion-button icon-only class="customBtn" round  item-end (click)="ask(question)">
+            <ion-icon name="md-send"></ion-icon>
+          </button>
+      </ion-item>
+      
+</ion-footer>
+  
