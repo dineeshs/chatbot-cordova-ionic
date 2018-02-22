@@ -8,11 +8,13 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { SpeechRecognition  } from '@ionic-native/speech-recognition';
 import { TextToSpeech } from '@ionic-native/text-to-speech';
+import { ModalContentPage } from '../pages/home/home';
 
 @NgModule({
   declarations: [
     MyApp,  
-    HomePage
+    HomePage,
+    ModalContentPage
   ],
   imports: [
     BrowserModule,
@@ -22,14 +24,16 @@ import { TextToSpeech } from '@ionic-native/text-to-speech';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    HomePage,
+    ModalContentPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     SpeechRecognition,
-    TextToSpeech
+    TextToSpeech,
+    HomePage
   ]
 })
 export class AppModule {}
