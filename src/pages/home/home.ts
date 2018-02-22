@@ -65,6 +65,7 @@ export class HomePage {
       this.oh = data;
       //this.messages.push(Constants.myMessageConstant);
     });
+    this.speak("Please click on the text field to change OnHand");
     modal.present();
   }
 
@@ -155,15 +156,14 @@ export class HomePage {
 ];
 this.slides = statuses;
       this.messages.push(new Message("These are the top available light bulbs","bot","","","","","",true));
-
+        response.speech = "These are the top available light bulbs";
 
          }
          
          else {
           this.messages.push(new Message(response.speech,"bot","","","","","",false));
          }
-         if(!response.speech.includes("Please input the new OH quantity") || 
-         !response.speech.includes("bulb"))
+         if(!response.speech.includes("Please input the new OH quantity"))
          this.speak(response.speech);
          });
       }); 
@@ -271,6 +271,7 @@ this.slides = statuses;
         }
       ]
     });
+    this.speak("Are you sure to proceed");
     alert.present();
   }
   
@@ -292,7 +293,7 @@ this.slides = statuses;
 
   speak(msg) {
     this.tts.speak(msg)
-  .then(() => this.dismiss())
+  .then(() => {if(msg.includes("OnHand quantity updated successfully")) {this.dismiss()} })
   .catch((reason: any) => console.log(reason));
   }
 
