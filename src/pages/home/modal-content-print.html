@@ -1,0 +1,46 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-title class="print-modal-header">
+        OverHead Management
+      </ion-title>
+      <ion-buttons start>
+        <button ion-button (click)="dismiss()">
+          <span ion-text color="primary" showWhen="ios">Cancel</span>
+          <ion-icon name="md-close"></ion-icon>
+        </button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content>
+    <ion-card>
+        <img class="modal-print-image" src="{{image}}"/>
+        <ion-card-content>
+          <ion-card-title>
+            <ion-item >
+                    <ion-row>
+                            <ion-col col-6>
+                                    <ion-badge class="badge-print" start>D21</ion-badge>
+                            </ion-col>
+                            <ion-col col-6 class="skuuuu">
+                                    <span class="skuClass" end>{{skuNumber}}</span>
+                                </ion-col>
+                        </ion-row>
+                
+                
+            </ion-item>
+            </ion-card-title>
+            <ion-list inset>
+
+                <ion-item>
+                   
+                  <ion-label>Quantity</ion-label>
+                  <ion-input type="text" class="print-input"></ion-input>
+                </ion-item>
+              
+              
+              </ion-list>
+        </ion-card-content>
+        <button ion-button full>Print</button>
+      </ion-card>
+  </ion-content>

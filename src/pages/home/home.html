@@ -20,139 +20,84 @@
         
         </div>
         <div *ngIf="message.title != ''">
-        <ion-card>
-  <ion-row class="details-row">
-    <ion-col col-4 class="details-column">
-        <ion-card>
-            <ion-card-header class="details-header">
-              SKU
-            </ion-card-header>
-            <ion-card-content class="details-content">
-              {{skuNumber}}
-            </ion-card-content>
-          </ion-card>
-          
-    </ion-col>
-    <ion-col col-4 class="details-column">
-        <ion-card>
-            <ion-card-header class="details-header">
-              LOC
-            </ion-card-header>
-            <ion-card-content class="details-content">
-              01-22
-            </ion-card-content>
-          </ion-card>
-    </ion-col>
-    <ion-col col-4 class="details-column">
-        <ion-card>
-            <ion-card-header class="details-header">
-              OH
-            </ion-card-header>
-            <ion-card-content class="details-content">
-              {{oh}}
-            </ion-card-content>
-          </ion-card>
-    </ion-col>
-  </ion-row>
-  
-  <img src="{{ message.image }}"/>
-  
-    <ion-card-content>
-      <ion-item >
-          <ion-card-title>
-              {{message.title}}
-              </ion-card-title>
-
-              <ion-badge class="custom-badge" item-end>$12</ion-badge>
-      </ion-item>
-    
-      
-      <div padding>
-          <ion-segment [(ngModel)]="pet">
-            <ion-segment-button value="kittens">
-              OH Details
-            </ion-segment-button>
-            <ion-segment-button value="puppies">
-              OH Adjustment
-            </ion-segment-button>
-          </ion-segment>
-        </div>
-        
-        <div [ngSwitch]="pet">
-          <ion-list *ngSwitchCase="'kittens'" class="details-list">
-            <ion-item>
-              <ion-row>
-                <ion-col col-6>
-                   <h2>SKU:</h2> 
-                </ion-col>
-                <ion-col col-6>
-                  <h2>{{skuNumber}}</h2>
-                  </ion-col>
-              </ion-row>
-            </ion-item>
-
-            <ion-item>
-                <ion-row>
-                    <ion-col col-6>
-                       <h2>Last Received:</h2> 
+            <ion-card>
+                <ion-row class="details-row">
+                    <ion-col col-4 class="details-column sku-column">
+                        <ion-card class="sku-details-card">
+                            <ion-card-header class="details-header">
+                              SKU
+                            </ion-card-header>
+                            <ion-card-content class="details-content">
+                              {{skuNumber}}
+                            </ion-card-content>
+                          </ion-card>
+                          
                     </ion-col>
-                    <ion-col col-6>
-                      <h2>01/01/2018</h2>
-                      </ion-col>
-                  </ion-row>
-              </ion-item>
-
-            <ion-item>
-                <ion-row>
-                    <ion-col col-6>
-                       <h2>CURRENT OH:</h2> 
+                    <ion-col col-4 class="details-column loc-column">
+                        <ion-card class="sku-details-card">
+                            <ion-card-header class="details-header">
+                              LOC
+                            </ion-card-header>
+                            <ion-card-content class="details-content">
+                             {{location}}
+                            </ion-card-content>
+                          </ion-card>
                     </ion-col>
-                    <ion-col col-6>
-                      <h2>{{oh}}</h2>
-                      </ion-col>
-                  </ion-row>
-              </ion-item>
-          </ion-list>
-        
-          <ion-list *ngSwitchCase="'puppies'" class="details-list">
-            <ion-item>
-                <ion-row>
-                    <ion-col col-6>
-                       <h2>New Count:</h2> 
+                    <ion-col col-4 class="details-column oh-column" >
+                        <ion-card class="sku-details-card">
+                            <ion-card-header class="details-header">
+                              OH
+                            </ion-card-header>
+                            <ion-card-content class="details-content">
+                              {{oh}}
+                            </ion-card-content>
+                          </ion-card>
                     </ion-col>
-                    <ion-col col-6>
-                      <h2></h2>
-                      </ion-col>
                   </ion-row>
-            </ion-item>
-
-            <ion-item>
-                <ion-row>
-                    <ion-col col-6>
-                       <h2>Service Quantity:</h2> 
-                    </ion-col>
-                    <ion-col col-6>
-                      <h2>2300</h2>
-                      </ion-col>
-                  </ion-row>
+                  
               
-              </ion-item>
-
-              <ion-item>
-                  <ion-row>
-                      <ion-col col-6>
-                         <h2>Picked Quantity:</h2> 
-                      </ion-col>
-                      <ion-col col-6>
-                        <h2>12</h2>
-                        </ion-col>
-                    </ion-row>
-                </ion-item>
-          </ion-list>
-        </div>
-  </ion-card-content>
-  <button ion-button full (click)="openModal({details: message})">{{message.button}}</button>
-</ion-card>
+              <ion-card-header class="slide-sku-header">
+                  <ion-item class="slide-sku-item">
+                      <ion-card-title class="slide-sku-title">
+                          {{message.title}}
+                          </ion-card-title>
+            
+                          
+                    </ion-item>
+                </ion-card-header>
+                <ion-row class="slide-image-row">
+                  <ion-col col-8>
+                      <img class="slide-image-first" src="{{message.image}}"/>
+                  </ion-col>
+                  <ion-col col-4 class="slide-column-badge">
+                      <ion-badge class="custom-badge" item-end>$12</ion-badge>
+                  </ion-col>
+                </ion-row>
+                
+               
+              <ion-card-content>
+                
+                <p>
+                  {{message.text}}
+                </p>
+              </ion-card-content>
+            </ion-card>
+            <ion-card>
+              <ion-card-header>
+                Actions Available: 
+              </ion-card-header>
+              <ion-card-content>
+                <ion-chip>
+                  <ion-label>Change OnHand</ion-label>
+                </ion-chip>
+                <ion-chip>
+                  <ion-label>Print Tag</ion-label>
+                </ion-chip>
+                <ion-chip>
+                  <ion-label>Change Loc</ion-label>
+                </ion-chip>
+              </ion-card-content>
+            </ion-card>
   </div>
 
   <div *ngIf="message.displayBulb === true">
@@ -160,8 +105,8 @@
           <ion-slide *ngFor="let slide of slides">
             <ion-card>
                 <ion-row class="details-row">
-                    <ion-col col-4 class="details-column">
-                        <ion-card>
+                    <ion-col col-4 class="details-column sku-column">
+                        <ion-card class="sku-details-card">
                             <ion-card-header class="details-header">
                               SKU
                             </ion-card-header>
@@ -171,8 +116,8 @@
                           </ion-card>
                           
                     </ion-col>
-                    <ion-col col-4 class="details-column">
-                        <ion-card>
+                    <ion-col col-4 class="details-column loc-column">
+                        <ion-card class="sku-details-card">
                             <ion-card-header class="details-header">
                               LOC
                             </ion-card-header>
@@ -181,8 +126,8 @@
                             </ion-card-content>
                           </ion-card>
                     </ion-col>
-                    <ion-col col-4 class="details-column">
-                        <ion-card>
+                    <ion-col col-4 class="details-column oh-column" >
+                        <ion-card class="sku-details-card">
                             <ion-card-header class="details-header">
                               OH
                             </ion-card-header>
@@ -193,20 +138,32 @@
                     </ion-col>
                   </ion-row>
                   
-              <img class="slide-image" src="{{slide.image}}"/>
-              <ion-card-content>
-                <ion-item >
-                  <ion-card-title>
-                      {{slide.title}}
-                      </ion-card-title>
-        
+              
+              <ion-card-header class="slide-sku-header">
+                  <ion-item class="slide-sku-item">
+                      <ion-card-title class="slide-sku-title">
+                          {{slide.title}}
+                          </ion-card-title>
+            
+                          
+                    </ion-item>
+                </ion-card-header>
+                <ion-row class="slide-image-row">
+                  <ion-col col-8>
+                      <img class="slide-image" src="{{slide.image}}"/>
+                  </ion-col>
+                  <ion-col col-4 class="slide-column-badge">
                       <ion-badge class="custom-badge" item-end>{{slide.rate}}</ion-badge>
-                </ion-item>
+                  </ion-col>
+                </ion-row>
+                
+               
+              <ion-card-content>
+                
                 <p>
                   {{slide.content}}
                 </p>
               </ion-card-content>
-              <button ion-button full>{{slide.button}}</button>
             </ion-card>
           </ion-slide>
           

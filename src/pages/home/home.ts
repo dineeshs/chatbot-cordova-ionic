@@ -32,6 +32,7 @@ export class BulbDetails {
 export class HomePage {
   skuNumber = '';
   oh = '';
+  location = '';
   myMessage : Message;
   messages = [];
   bulbon = false;
@@ -62,10 +63,17 @@ export class HomePage {
   openModal(message) {
     let modal = this.modalCtrl.create(ModalContentPage, message, {showBackdrop: false});
     modal.onDidDismiss(data => {
-      this.oh = data;
+      this.oh = Constants.currentOH;
+      this.location = Constants.currentLocation;
       //this.messages.push(Constants.myMessageConstant);
     });
-    this.speak("Please click on the text field to change OnHand");
+    modal.present();
+  }
+
+  openModalPrint(message) {
+    let modal = this.modalCtrl.create(ModalContentPagePrint,message);
+    modal.onDidDismiss(data => {
+    });
     modal.present();
   }
 
@@ -112,29 +120,45 @@ export class HomePage {
         if (response.speech.includes("Hammer")) {
           this.skuNumber = Constants.skuNumber1;
           this.oh = Constants.onHandQuantity1;
+          this.location = Constants.location1;
           Constants.currentSkuNumber = this.skuNumber;
           Constants.currentOH = this.oh;
+          Constants.currentLocation = this.location;
           this.myMessage = new Message(response.speech,"bot","Hammer", 
           "https://images.homedepot-static.com/productImages/f1e59730-23fb-4660-ad22-61fef380589a/svn/tekton-claw-hammers-30303-64_1000.jpg", 
-          "Sku Name: Hammer","Click for Hammer", "",false);
+          "10 lb. Sledge Hammer with 34 in. Fiberglass Handle","Click for Hammer", "",false);
           Constants.myMessageConstant = this.myMessage;
             this.messages.push(this.myMessage);
          }
          else if(response.speech.includes("Sewing Machine")) {
           this.skuNumber = Constants.skuNumber2;
           this.oh = Constants.onHandQuantity2;
+          this.location = Constants.location2;
           Constants.currentSkuNumber = this.skuNumber;
           Constants.currentOH = this.oh;
+          Constants.currentLocation = this.location;
            this.myMessage = new Message(response.speech,"bot","Sewing machine", 
            "https://images.homedepot-static.com/productImages/dd70303c-dbf0-423e-8a9f-fffc189897f8/svn/black-janome-sewing-machines-001hd1000be-64_1000.jpg", 
-           "Sku Name: Sewing Machine","Click for Sewing Machine", "", false);
+           "Janome HD1000 Black Edition Industrial-Grade Sewing Machine","Click for Sewing Machine", "", false);
            Constants.myMessageConstant = this.myMessage;
           this.messages.push(this.myMessage);
          }
 
          else if(response.speech.includes("Please input the new OH quantity")) {
+           Constants.change = "New OnHands Value";
+           Constants.changeValue = "Change OnHands Value";
           this.openModal({details: this.myMessage});
          }
+
+         else if(response.speech.includes("Please input the new location")) {
+          Constants.change = "New Location Value";
+          Constants.changeValue = "Change Location Value";
+         this.openModal({details: this.myMessage});
+        }
+
+        else if(response.speech.includes("print")) {
+         this.openModalPrint({details: this.myMessage});
+        }
 
          else if(response.speech.includes("bulb")) {
           this.bulbon = true;
@@ -163,7 +187,9 @@ this.slides = statuses;
          else {
           this.messages.push(new Message(response.speech,"bot","","","","","",false));
          }
-         if(!response.speech.includes("Please input the new OH quantity"))
+         if(!response.speech.includes("Please input the new OH quantity") ||
+         !response.speech.includes("Please input the new location") ||
+        !response.speech.includes("print"))
          this.speak(response.speech);
          });
       }); 
@@ -225,6 +251,9 @@ this.slides = statuses;
   newOh = "";
   skuNumber= Constants.currentSkuNumber;
   oh = Constants.currentOH;
+  location = Constants.currentLocation;
+   change = Constants.change;
+   changeValue = Constants.changeValue;
 
   constructor(
     public platform: Platform,
@@ -235,16 +264,39 @@ this.slides = statuses;
     public homepage: HomePage,
     private alertCtrl: AlertController
   ) {
+    this.change = Constants.change;
+    this.changeValue = Constants.changeValue;
     this.message = this.params.get('details');
     this.skuNumber = Constants.currentSkuNumber;
     this.oh = Constants.currentOH;
+    this.location = Constants.currentLocation;
+    var speech = "Please input the new Location";
+    if(Constants.change === "New Location Value") {
+      speech = "Please input the new Location";
+    }
+    else {
+      speech = "Please input the new OnHand quantity"
+    }
+    this.speak(speech);
+    this.startVoice();
   }
 
   
   presentConfirm() {
+    var tit = '';
+    var mess = '';
+    if(Constants.change === "New Location Value") {
+      tit = "Confirm Location Change";
+      mess = "Do you want to confirm the Location Change?";
+    }
+    else {
+      tit = "Confirm OH Change";
+      mess = "Do you want to confirm the OH Change?";
+    }
     let alert = this.alertCtrl.create({
-      title: 'Confirm OH Change',
-      message: 'Do you want to confirm the OH Change?',
+
+      title: tit,
+      message: mess,
       buttons: [
         {
           text: 'Cancel',
@@ -256,17 +308,33 @@ this.slides = statuses;
         {
           text: 'Confirm',
           handler: () => {
-            this.oh = this.newOh;
+            if(Constants.change === "New Location Value") {
+              this.location = this.newOh;
             if(Constants.skuNumber1 === this.skuNumber) {
-                Constants.onHandQuantity1 = this.oh;
+                Constants.location1 = this.oh;
             }
             else {
-              Constants.onHandQuantity2 = this.oh;
+              Constants.location2 = this.oh;
             }
             this.homepage.func();
            // console.log(this.homepage.messages);
             // this.homepage.pushMessage(Constants.myMessageConstant);
-            this.speak("OnHand quantity updated successfully");
+            this.speak("Location details updated successfully");
+            }
+            else {
+              this.oh = this.newOh;
+              if(Constants.skuNumber1 === this.skuNumber) {
+                  Constants.onHandQuantity1 = this.oh;
+              }
+              else {
+                Constants.onHandQuantity2 = this.oh;
+              }
+              this.homepage.func();
+             // console.log(this.homepage.messages);
+              // this.homepage.pushMessage(Constants.myMessageConstant);
+              this.speak("OnHand quantity updated successfully");
+            }
+            
           }
         }
       ]
@@ -293,7 +361,8 @@ this.slides = statuses;
 
   speak(msg) {
     this.tts.speak(msg)
-  .then(() => {if(msg.includes("OnHand quantity updated successfully")) {this.dismiss()} })
+  .then(() => {if(msg.includes("OnHand quantity updated successfully") ||
+msg.includes("Location details updated successfully")) {this.dismiss()} })
   .catch((reason: any) => console.log(reason));
   }
 
@@ -301,5 +370,31 @@ this.slides = statuses;
     let data = this.oh;
     this.viewCtrl.dismiss(data);
     
+  }
+}
+
+
+
+
+
+@Component({
+  templateUrl: 'modal-content-print.html'
+})
+ export class ModalContentPagePrint {
+skuNumber;
+image;
+message;
+  constructor(
+    public platform: Platform,
+    public params: NavParams,
+    public viewCtrl: ViewController
+  ) {
+    this.skuNumber = Constants.currentSkuNumber;
+    this.message = this.params.get('details');
+    this.image = this.message.image;
+  }
+
+  dismiss() {
+    this.viewCtrl.dismiss();
   }
 }

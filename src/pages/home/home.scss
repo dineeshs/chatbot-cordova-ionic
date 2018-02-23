@@ -11,7 +11,7 @@
 
 
 .message.to {
-    background-color: #2095FE;
+    background-color: lightseagreen;
     color: #fff;
     margin-left: 100px;
     text-align: right;
@@ -46,24 +46,24 @@ margin-top: -10px;
     width: 337px !important;
 }
 
-.details-column {
-    padding: 0;
-}
+// .details-column {
+//     padding: 0;
+// }
 
-.details-row {
-    background-color: darkorange;
-}
+// .details-row {
+//     background-color: darkorange;
+// }
 
 .details-header {
-    color: white;
-    background-color: black;
+    padding: 6px;
+    font-weight: bolder;
     text-align: center;
 }
 
 .details-content {
-    padding-top: 8px !important;
-    text-align: center;
+    color: #F96302;
     font-weight: bolder;
+    text-align: center;
 }
 
 .details-list {
@@ -76,8 +76,8 @@ margin-top: -10px;
 }
 
 .custom-badge {
-    padding: 13px 32px;
-    font-size: 2.3rem;
+    padding: 13px 20px;
+    font-size: 3.3rem;
 }
 
 .modal-card {
@@ -85,5 +85,98 @@ margin-top: -10px;
 }
 
 .swiper-pagination-bullets {
-    bottom: 0px !important;
+}
+
+.details-item {
+    color: black;
+}
+
+.sku-details-card {
+    padding: 0px;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.item-overview-header {
+    background-color: black;
+    color: white;
+    font-weight: bolder;
+}
+
+.slide-image-row {
+    height: 13em;
+}
+
+.slide-column-badge {
+    padding-top: 4em;
+}
+.slide-sku-header {
+    padding: 0.2em;
+}
+
+.slide-sku-item {
+    background-color: #74706c;
+    text-align: center;
+}
+.slide-sku-title {
+    color: white;
+    padding: 0;
+}
+
+.sku-column {
+    padding-right: 0;
+}
+.loc-column {
+    padding-left: 0;
+    padding-right: 0;
+    
+}
+.oh-column {
+    padding-left: 0;
+}
+
+.slide-image-first {
+    height: 180px !important;
+    width: 337px !important;    
+}
+
+.custom-badge-onhandchange {
+    padding: 13px 20px;
+    background-color: blue;
+    color: white;
+    border-radius: 50px;
+}
+
+ion-modal {
+    background-color: #F96302;
+    top: 53px;
+}
+
+.locationChange {
+    background-color: chartreuse;
+}
+
+.modal-print-image {
+    height: 18em;
+}
+
+.print-input {
+    border: 1px solid black;
+    height: 3em;
+}
+
+.badge-print {
+    border-radius: 50px;
+    padding: 15px 6px;
+    font-size: 2.3rem;
+}
+
+.skuClass {
+    font-size: xx-large;
+    font-weight: bolder;
+}
+
+.skuuuu {
+    padding-top: 1em;
 }
