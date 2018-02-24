@@ -19,11 +19,14 @@
           <ion-card-title>
             <ion-item >
                     <ion-row>
-                            <ion-col col-6>
+                            <ion-col col-4>
                                     <ion-badge class="badge-print" start>D21</ion-badge>
                             </ion-col>
-                            <ion-col col-6 class="skuuuu">
-                                    <span class="skuClass" end>{{skuNumber}}</span>
+                            <ion-col col-4 class="skuuuu">
+                              <span class="skuClass" end>DXS8288</span>
+                          </ion-col>
+                            <ion-col col-4 class="skuuuu">
+                                    <span class="skuClassSku" end>{{skuNumber}}</span>
                                 </ion-col>
                         </ion-row>
                 
@@ -35,12 +38,12 @@
                 <ion-item>
                    
                   <ion-label>Quantity</ion-label>
-                  <ion-input type="text" class="print-input"></ion-input>
+                  <ion-input type="text" class="print-input" [(ngModel)]="quantity" (click)="startVoice()"></ion-input>
                 </ion-item>
               
               
               </ion-list>
         </ion-card-content>
-        <button ion-button full>Print</button>
+        <button ion-button full (click)="printMethod()">Print</button>
       </ion-card>
   </ion-content>

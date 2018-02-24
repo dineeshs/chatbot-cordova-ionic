@@ -7,7 +7,7 @@ import { ViewChild } from '@angular/core';
 import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { Component, NgZone } from '@angular/core';
 
-import { Platform } from 'ionic-angular';
+import { Platform, LoadingController, ToastController, ActionSheetController } from 'ionic-angular';
 import { SpeechRecognition } from '@ionic-native/speech-recognition';
 import { Content } from 'ionic-angular';
 import { ModalController, NavParams, ViewController } from 'ionic-angular';
@@ -41,7 +41,7 @@ export class HomePage {
   public question;
   pet: string = "kittens";
   constructor(public platform: Platform, public ngZone: NgZone, private speechRecognition: SpeechRecognition,
-  private tts: TextToSpeech, public http: Http, public modalCtrl: ModalController) {
+  private tts: TextToSpeech, public http: Http, public modalCtrl: ModalController, public actionSheetCtrl: ActionSheetController) {
     // console.log(" on constructor");
     // platform.ready().then(() => {
     // console.log("platform ready for api.ai call");
@@ -58,6 +58,42 @@ export class HomePage {
     //     });
         
     // });
+  }
+  openModalHelp(message) {
+    let modal = this.modalCtrl.create(ModalContentPageHelp, message);
+    modal.present();
+  }
+
+  presentActionSheet() {
+    let actionSheet = this.actionSheetCtrl.create({
+      title: 'Actions Available',
+      buttons: [
+        {
+          text: 'Change OnHands for a SKU',
+          handler: () => {
+            this.openModalHelp({details: "onhands"});
+          }
+        },{
+          text: 'Change Location for a SKU',
+          handler: () => {
+            this.openModalHelp({details: "location"});
+          }
+        }
+        ,{
+          text: 'Print Overhead Tag for a SKU',
+          handler: () => {
+            this.openModalHelp({details: "print"});;
+          }
+        },{
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
   }
 
   openModal(message) {
@@ -129,6 +165,7 @@ export class HomePage {
           "10 lb. Sledge Hammer with 34 in. Fiberglass Handle","Click for Hammer", "",false);
           Constants.myMessageConstant = this.myMessage;
             this.messages.push(this.myMessage);
+            this.speak("The product you searched for is Hammer. It is a 10 lb. Sledge Hammer with 34 in. Fiberglass Handle Hammer");
          }
          else if(response.speech.includes("Sewing Machine")) {
           this.skuNumber = Constants.skuNumber2;
@@ -142,6 +179,7 @@ export class HomePage {
            "Janome HD1000 Black Edition Industrial-Grade Sewing Machine","Click for Sewing Machine", "", false);
            Constants.myMessageConstant = this.myMessage;
           this.messages.push(this.myMessage);
+          this.speak("The product you searched for is Sewing machine. It is a Janome HD1000 Black Edition Industrial-Grade Sewing Machine");
          }
 
          else if(response.speech.includes("Please input the new OH quantity")) {
@@ -159,6 +197,11 @@ export class HomePage {
         else if(response.speech.includes("print")) {
          this.openModalPrint({details: this.myMessage});
         }
+
+        else if(response.speech.includes("These are the available actions in the app. Please click on the help topics and i will guide you on each of those actions")) {
+          this.presentActionSheet();
+          this.speak(response.speech);
+         }
 
          else if(response.speech.includes("bulb")) {
           this.bulbon = true;
@@ -181,16 +224,15 @@ export class HomePage {
 this.slides = statuses;
       this.messages.push(new Message("These are the top available light bulbs","bot","","","","","",true));
         response.speech = "These are the top available light bulbs";
+        this.speak("These are the top available light bulbs in home depot. You can slide over the content to see all the top bulbs available.")
 
          }
          
          else {
           this.messages.push(new Message(response.speech,"bot","","","","","",false));
+          this.speak(response.speech);
          }
-         if(!response.speech.includes("Please input the new OH quantity") ||
-         !response.speech.includes("Please input the new location") ||
-        !response.speech.includes("print"))
-         this.speak(response.speech);
+        
          });
       }); 
     // .then(({result: {fulfillment: {speech}}}) => {
@@ -262,7 +304,8 @@ this.slides = statuses;
     public speechRecognition: SpeechRecognition,
     private tts: TextToSpeech,
     public homepage: HomePage,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private toastCtrl: ToastController
   ) {
     this.change = Constants.change;
     this.changeValue = Constants.changeValue;
@@ -270,15 +313,33 @@ this.slides = statuses;
     this.skuNumber = Constants.currentSkuNumber;
     this.oh = Constants.currentOH;
     this.location = Constants.currentLocation;
-    var speech = "Please input the new Location";
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      var speech = "Please click on the text field to change Location";
     if(Constants.change === "New Location Value") {
-      speech = "Please input the new Location";
+      speech = "Please click on the text field to change Location";
     }
     else {
-      speech = "Please input the new OnHand quantity"
+      speech = "Please click on the text field to change OnHands"
     }
     this.speak(speech);
-    this.startVoice();
+    }, 1000);
+    
+  }
+  presentToast(text) {
+    let toast = this.toastCtrl.create({
+      message: text,
+      duration: 3000,
+      position: 'top'
+    });
+  
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
+    });
+  
+    toast.present();
   }
 
   
@@ -319,6 +380,7 @@ this.slides = statuses;
             this.homepage.func();
            // console.log(this.homepage.messages);
             // this.homepage.pushMessage(Constants.myMessageConstant);
+            this.presentToast("Location details updated successfully");
             this.speak("Location details updated successfully");
             }
             else {
@@ -332,6 +394,7 @@ this.slides = statuses;
               this.homepage.func();
              // console.log(this.homepage.messages);
               // this.homepage.pushMessage(Constants.myMessageConstant);
+              this.presentToast("OnHand quantity updated successfully");
               this.speak("OnHand quantity updated successfully");
             }
             
@@ -384,17 +447,206 @@ msg.includes("Location details updated successfully")) {this.dismiss()} })
 skuNumber;
 image;
 message;
+quantity;
+print;
   constructor(
     public platform: Platform,
     public params: NavParams,
-    public viewCtrl: ViewController
+    public viewCtrl: ViewController,
+    public tts: TextToSpeech,
+    public speechRecognition: SpeechRecognition,
+    public alertCtrl: AlertController,
+    public loadingCtrl: LoadingController,
+    private toastCtrl: ToastController
   ) {
     this.skuNumber = Constants.currentSkuNumber;
     this.message = this.params.get('details');
     this.image = this.message.image;
+    this.quantity = '';
+  }
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.speak("Please input the quantity for the tag by clicking on the quantity text field");
+    }, 1000);
+    
+  }
+
+  presentToast() {
+    let toast = this.toastCtrl.create({
+      message: 'Tag Printed Successfully',
+      duration: 3000,
+      position: 'top'
+    });
+  
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
+      
+    });
+  
+    toast.present();
+  }
+  presentLoadingDefault() {
+    let loading = this.loadingCtrl.create({
+      content: 'Printing....'
+    });
+  
+    loading.onDidDismiss(() => {
+      this.presentToast();
+    this.speak("The given tag was printed successfully.");
+    });
+
+    loading.present();
+  
+    setTimeout(() => {
+      loading.dismiss();
+    }, 3000);
+  }
+  startVoice() {
+    console.log("speech in modal");
+    this.speechRecognition.startListening()
+  .subscribe(
+    (matches: Array<string>) => {
+      this.quantity = matches[0];
+      this.speak("Are you ready to print the tag with the given details. If yes, please say print in the next voice input screen or say cancel. You can always print the tag using the print button at the bottom of the page.")
+      
+    },
+    (onerror) => console.log('error:', onerror)
+  )}
+
+  startVoiceForPrint() {
+    console.log("speech in modal");
+    this.speechRecognition.startListening()
+  .subscribe(
+    (matches: Array<string>) => {
+      this.print = matches[0];
+      if(this.print === 'print' || 'Print' || 'prind') {
+        this.printMethod();
+
+      } else {
+          this.speak("print cancelled. You can always print the tag by clicking print button at the bottom of the page.")
+      }
+    },
+    (onerror) => console.log('error:', onerror)
+  )}
+
+  printMethod() {
+    this.presentLoadingDefault();
+    
+    
+  }
+  presentConfirm() {
+    let alert = this.alertCtrl.create({
+
+      title: 'Confirm Print',
+      message: "Are you sure to print the Overhead Tag?",
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Confirm',
+          handler: () => {
+            this.speak("Overhead Tag Printed Successfully");
+           
+            
+          }
+        }
+      ]
+    });
+    this.speak("Are you sure to proceed");
+    alert.present();
+  
+
+  }
+  speak(msg) {
+    this.tts.speak(msg)
+  .then(() => {if(msg.includes("The given tag was printed successfully.")) {this.dismiss()}
+else if(msg.includes("Are you ready to print the tag with the given details. If yes, please say print in the next voice input screen or say cancel. You can always print the tag using the print button at the bottom of the page.")) 
+{this.startVoiceForPrint();} })
+  .catch((reason: any) => console.log(reason));
   }
 
   dismiss() {
     this.viewCtrl.dismiss();
+  }
+}
+
+
+@Component({
+  templateUrl: 'modal-content-help.html'
+})
+ export class ModalContentPageHelp {
+howToTitle = '';
+items;
+message;
+  constructor(
+    public platform: Platform,
+    public params: NavParams,
+    public viewCtrl: ViewController,
+    public tts: TextToSpeech,
+    public speechRecognition: SpeechRecognition,
+    public alertCtrl: AlertController,
+    public loadingCtrl: LoadingController,
+    private toastCtrl: ToastController
+  ) {
+    this.message = this.params.get('details');
+    if(this.message === "onhands") {
+      this.howToTitle = "How to change OnHands?";
+      this.items = ["1. Input the SkuNumber in the home page", "2. Once the card is displayed for the sku", "3. Input command change onhands","4. or Input change oh", "5. Click on the change Oh field","6. Input New OnHands", "7. Confirm the change"];
+    }
+
+    else if(this.message === "location") {
+      this.howToTitle = "How to change Location?";
+      this.items = ["1. Input the SkuNumber in the home page", "2. Once the card is displayed for the sku", "3. Input command change location","4. or Input change loc", "5. Click on the change Location field","6. Input new Location", "7. Confirm the change"];
+    }
+    else if(this.message === "print") {
+      this.howToTitle = "How to Print Overhead tag?";
+      this.items = ["1. Input the SkuNumber in the home page", "2. Once the card is displayed for the sku", "3. Input command print tag","4. or print overhead tag", "5. Click on the change quantity field","6. Input new quantity", "7. Confirm the Print"];
+    }
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      if(this.message === "onhands") {
+        this.speak("To Change OnHands for a sku, do the following  ."+
+      "Input the sku number in the home page.   and Once the card is displayed for the sku."+
+    "  input the command change on hands or change oh. Click on the change oh field and input the new oh value."+
+  "   After that, confirm the changes");
+        
+      }
+  
+      else if(this.message === "location") {
+        this.speak("To Change Location for a sku, do the following  ."+
+      " Input the sku number in the home page.   and Once the card is displayed for the sku."+
+    " input the command change location or change loc.  Click on the change location field and input the new location value."+
+  "   After that, confirm the changes");
+      }
+      else if(this.message === "print") {
+        this.speak("To Print tag for a sku, do the following  ."+
+      "Input the sku number in the home page.    and Once the card is displayed for the sku. "+
+    "  input the command print tag or print overhead tag. Click on the quantity field and input the new quantity."+
+  "   After that, confirm the print");
+      }
+    }, 1000);
+    
+  }
+
+
+  speak(msg) {
+    this.tts.speak(msg)
+  .then(() => {return "completed"})
+  .catch((reason: any) => console.log(reason));
+  }
+   
+  dismiss() {
+    this.speak("");
+    this.viewCtrl.dismiss();
+  }
+  ngOnDestroy() {
+    this.speak("");
   }
 }

@@ -1,0 +1,22 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-title>
+        {{howToTitle}}
+      </ion-title>
+      <ion-buttons start>
+        <button ion-button (click)="dismiss()">
+          <span ion-text color="primary" showWhen="ios">Cancel</span>
+          <ion-icon name="md-close"></ion-icon>
+        </button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content>
+    <ion-list>
+  
+        <ion-item *ngFor="let item of items">
+            {{item}}
+        </ion-item>
+    </ion-list>
+  </ion-content>
