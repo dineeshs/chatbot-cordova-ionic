@@ -37,13 +37,13 @@
 
                 <ion-item>
                    
-                  <ion-label>Quantity</ion-label>
+                  <ion-label>{{quantityField | translate: format}}</ion-label>
                   <ion-input type="text" class="print-input" [(ngModel)]="quantity" (click)="startVoice()"></ion-input>
                 </ion-item>
               
               
               </ion-list>
         </ion-card-content>
-        <button ion-button full (click)="printMethod()">Print</button>
+        <button ion-button full (click)="printMethod()">{{printField | translate: format}}</button>
       </ion-card>
   </ion-content>

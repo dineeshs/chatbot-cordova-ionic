@@ -15,4 +15,5 @@ export class Constants {
     public static changeValue = '';
     public static departmentNumber = "D23";
     public static ldap = "DXS8288";
+    public static language = "english";
 }

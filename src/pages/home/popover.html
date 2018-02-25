@@ -1,0 +1,16 @@
+<ion-list radio-group [(ngModel)]="selectedLanguage">
+        <ion-list-header>
+          {{selectLanguage | translate: format}}
+        </ion-list-header>
+      
+        <ion-item>
+          <ion-label>{{english | translate: format}}</ion-label>
+          <ion-radio value="english" (click)="buttonClicked()"></ion-radio>
+        </ion-item>
+      
+        <ion-item>
+          <ion-label>{{spanish | translate: format}}</ion-label>
+          <ion-radio value="spanish" (click)="buttonClicked()"></ion-radio>
+        </ion-item>
+      
+      </ion-list>

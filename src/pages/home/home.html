@@ -1,11 +1,16 @@
 <ion-header>
     <ion-toolbar color=primary>
+        
       <ion-title>Haisy</ion-title>
       <ion-buttons end>
+          
           <button secondary ion-button icon-left end (click)="presentActionSheet()">
               <ion-icon name="help"></ion-icon>
-              Help
+              {{help | translate: format}}
             </button>
+            <button ion-button icon-only (click)="presentPopover($event)">
+                <ion-icon name="more"></ion-icon>
+              </button>
         </ion-buttons>
       
     </ion-toolbar>
