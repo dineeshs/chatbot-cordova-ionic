@@ -63,7 +63,7 @@
 
 <ion-card>
   <ion-card-header>
-    {{changeValue}} 
+    {{changeValue | translate: format}} 
   </ion-card-header>
   <ion-card-content>
     <ion-input type="text" placeholder="{{change}}" [(ngModel)]="newOh" (click)="startVoice()"></ion-input>

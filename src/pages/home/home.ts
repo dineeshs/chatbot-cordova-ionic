@@ -38,6 +38,7 @@ export class HomePage {
   bulbon = false;
   slides= [];
   help='help';
+  actionsAvailable = 'Actions Available:';
   @ViewChild(Content) content: Content;
   get format()   { return Constants.language; }
   public question;
@@ -413,6 +414,7 @@ this.slides = statuses;
     this.location = Constants.currentLocation;
   }
 
+  get format()   { return Constants.language; }
   ngAfterViewInit() {
     setTimeout(() => {
       var speech = "Please click on the text field to change Location";
@@ -608,6 +610,8 @@ quantityField = "quantityField";
     this.quantity = '';
   }
 
+  get format()   { return Constants.language; }
+
   spanish(msg, number) {
     this.tts.speak({
       text: msg,
@@ -683,7 +687,7 @@ var toastMessage;
   .subscribe(
     (matches: Array<string>) => {
       this.print = matches[0];
-      if(this.print === 'print' || 'Print' || 'prind' || 'impresión' || 'impresion') {
+      if(this.print === 'print' || this.print ==='Print' || this.print ==='prind' || this.print ==='impresión' || this.print ==='impresion') {
         this.printMethod();
 
       } else {

@@ -36,6 +36,17 @@ export class Translate implements PipeTransform {
         if (value === "english") {
             return "Inglés"
         }
+
+        if(value === "Change OnHands Value") {
+            return "Cambiar el valor de OnHands";
+        }
+        if(value === "Change Location Value") {
+            return "Cambiar el valor de ubicación";
+        }
+
+        if(value === "Actions Available:") {
+            return "Acciones disponibles:";
+        }
           
       }
       else {
@@ -67,6 +78,17 @@ export class Translate implements PipeTransform {
     }
     if (value === "spanish") {
         return "Spanish"
+    }
+
+    if(value === "Change OnHands Value") {
+        return value;
+    }
+    if(value === "Change Location Value") {
+        return value;
+    }
+
+    if(value === "Actions Available:") {
+        return value;
     }
           
       }
