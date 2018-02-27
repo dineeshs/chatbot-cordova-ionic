@@ -584,7 +584,7 @@ if(number === 5) {
     } else i = Constants.currentOH;
     if(Constants.language === "english")
     this.speak("Are you sure to update the value from "+i+ "to "+this.newOh+ "If yes, please confirm else cancel at the next voice input", 5 );
-    this.spanish("¿Estás seguro de actualizar el valor de ? "+i+"a "+this.newOh+ "En caso afirmativo, confirme que canceló en la siguiente entrada de voz", 5)
+    else this.spanish("¿Estás seguro de actualizar el valor de ? "+i+"a "+this.newOh+ "En caso afirmativo, confirme que canceló en la siguiente entrada de voz", 5)
     //alert.present();
     
     //alert.dismiss();
@@ -647,7 +647,7 @@ if(number === 5) {
         this.cancelUpdation();
       }
       else if(matches[0] === 'confirm' || matches[0]==='Confirm') {
-        return 'confirmed';
+        this.updationSuccessful();
       }
       else {
         this.newOh = matches[0];
@@ -679,7 +679,8 @@ if(number === 5) {
   .then(() => {if(msg.includes("OnHand quantity updated successfully") ||
 msg.includes("Location details updated successfully" || msg.includes("Detalles de ubicación actualizados con éxito") || msg.includes("Cantidad en mano actualizada con éxito"))) {this.dismiss()};
 if(number === 5) {
- this.updationSuccessful();
+  this.startVoice();
+ 
 }
 if(number === 10) {
   this.startVoice();
