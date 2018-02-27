@@ -583,8 +583,8 @@ if(number === 5) {
       i=Constants.currentLocation;
     } else i = Constants.currentOH;
     if(Constants.language === "english")
-    this.speak("Are you sure to update the value from "+i+ "to "+this.newOh+ "If yes, please confirm else cancel at the next voice input", 5 );
-    else this.spanish("¿Estás seguro de actualizar el valor de ? "+i+"a "+this.newOh+ "En caso afirmativo, confirme que canceló en la siguiente entrada de voz", 5)
+    this.speak("Are you sure to update the value from "+i+ "to "+this.newOh+ "    If yes, please confirm else cancel at the next voice input", 5 );
+    else this.spanish("¿Estás seguro de actualizar el valor de ? "+i+"a "+this.newOh+ "     En caso afirmativo, confirme que canceló en la siguiente entrada de voz", 5)
     //alert.present();
     
     //alert.dismiss();
@@ -637,12 +637,12 @@ if(number === 5) {
   }
   
 
-  startVoice(): string {
+  startVoice() {
     console.log("speech in modal");
     this.speechRecognition.startListening()
   .subscribe(
     (matches: Array<string>) => {
-      this.newOh = matches[0];
+      //this.newOh = matches[0];
       if(matches[0] === 'cancel' || matches[0] === 'Cancel') {
         this.cancelUpdation();
       }
@@ -659,7 +659,6 @@ if(number === 5) {
     (onerror) => console.log('error:', onerror)
   )
 
-  return '';
 
 
   }
@@ -677,7 +676,7 @@ if(number === 5) {
   speak(msg, number): string {
     this.tts.speak(msg)
   .then(() => {if(msg.includes("OnHand quantity updated successfully") ||
-msg.includes("Location details updated successfully" || msg.includes("Detalles de ubicación actualizados con éxito") || msg.includes("Cantidad en mano actualizada con éxito"))) {this.dismiss()};
+msg.includes("Location details updated successfully" || msg.includes("Detalles de ubicación actualizados con éxito") || msg.includes("Cantidad en mano actualizada con éxito"))) {this.dismiss()}
 if(number === 5) {
   this.startVoice();
  
