@@ -1,3 +1,4 @@
+import { constantCase } from '@ionic/app-scripts/dist';
 import { HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import { Http, Response } from '@angular/http';
@@ -417,22 +418,48 @@ this.slides = statuses;
   get format()   { return Constants.language; }
   ngAfterViewInit() {
     setTimeout(() => {
-      var speech = "Please click on the text field to change Location";
+      var speech = "Please input the new Location value at the next voice input. If you wish to cancel the updation say cancel";
     if(Constants.change === "New Location Value") {
       if(Constants.language === "english")
-      speech = "Please click on the text field to change Location";
-      else speech = "Haga clic en el campo de texto para cambiar la ubicación";
+      speech = "Please input the new Location value at the next voice input. If you wish to cancel the updation say cancel";
+      else speech = "Ingrese el nuevo valor de ubicación en la siguiente entrada de voz. Si desea cancelar la actualización, indique cancelar";
     }
     else {
       if(Constants.language === "english")
-      speech = "Please click on the text field to change OnHands"
-      else speech = "Haga clic en el campo de texto para cambiar OnHands";
+      speech = "Please input the new OnHand value at the next voice input. If you wish to cancel the updation say cancel"
+      else speech = "Ingrese el nuevo valor de OnHand en la próxima entrada de voz. Si desea cancelar la actualización, indique cancelar";
     }
     if(Constants.language === "english")
-    this.speak(speech);
-    else this.spanish(speech, 0);
+    this.speak(speech, 10);
+    else this.spanish(speech, 10);
+
+    //this.startVoice();
     }, 1000);
     
+  }
+
+  startVoiceToFetchValue() {
+    console.log("speech in modal");
+    this.speechRecognition.startListening()
+  .subscribe(
+    (matches: Array<string>) => {
+      this.newOh = matches[0];
+      if(matches[0] === 'cancel' || matches[0] === 'Cancel') {
+        this.cancelUpdation();
+      }
+      else if(matches[0] === 'confirm' || matches[0]==='Confirm') {
+        return 'confirmed';
+      }
+      else {
+        this.newOh = matches[0];
+      }
+      //this.presentConfirm();
+      
+    },
+    (onerror) => console.log('error:', onerror)
+  )
+
+  return '';
   }
 
   spanish(msg, number) {
@@ -440,7 +467,15 @@ this.slides = statuses;
       text: msg,
         locale: 'es-ES',
     })
-    .then(() => {if(number === 1) {this.dismiss()} })
+    .then(() => {if(number === 1) {this.dismiss()}
+  
+if(number === 10) {
+  this.startVoice();
+}
+if(number === 5) {
+  this.updationSuccessful();
+}
+ })
       .catch((reason: any) => console.log(reason));
       }
   presentToast(text) {
@@ -514,7 +549,7 @@ this.slides = statuses;
             }else toasttext = "Detalles de ubicación actualizados con éxito"
             this.presentToast(toasttext);
             if(Constants.language === "english") {
-              this.speak(toasttext);
+              this.speak(toasttext,0);
             } else this.spanish(toasttext, 1);
             
             }
@@ -535,7 +570,7 @@ this.slides = statuses;
             }else toasttext = "Cantidad en mano actualizada con éxito"
             this.presentToast(toasttext);
             if(Constants.language === "english") {
-              this.speak(toasttext);
+              this.speak(toasttext,0);
             } else this.spanish(toasttext,1);
             }
             
@@ -543,33 +578,115 @@ this.slides = statuses;
         }
       ]
     });
+    var i , returnval;
+    if(Constants.change === "New Location Value") {
+      i=Constants.currentLocation;
+    } else i = Constants.currentOH;
     if(Constants.language === "english")
-    this.speak("Are you sure to proceed?");
-    else this.spanish("¿Estás seguro de proceder?", 0)
-    alert.present();
+    this.speak("Are you sure to update the value from "+i+ "to "+this.newOh+ "If yes, please confirm else cancel at the next voice input", 5 );
+    this.spanish("¿Estás seguro de actualizar el valor de ? "+i+"a "+this.newOh+ "En caso afirmativo, confirme que canceló en la siguiente entrada de voz", 5)
+    //alert.present();
+    
+    //alert.dismiss();
+    //this.updationSuccessful
+  }
+
+  updationSuccessful() {
+    if(Constants.change === "New Location Value") {
+              this.location = this.newOh;
+            if(Constants.skuNumber1 === this.skuNumber) {
+                Constants.location1 = this.oh;
+            }
+            else {
+              Constants.location2 = this.oh;
+            }
+            this.homepage.func();
+           // console.log(this.homepage.messages);
+            // this.homepage.pushMessage(Constants.myMessageConstant);
+            var toasttext, toastspeak;
+            if(Constants.language === "english") {
+              toasttext = "Location details updated successfully";
+            }else toasttext = "Detalles de ubicación actualizados con éxito"
+            this.presentToast(toasttext);
+            if(Constants.language === "english") {
+              this.speak(toasttext,0);
+            } else this.spanish(toasttext, 1);
+            
+            }
+            else {
+              this.oh = this.newOh;
+              if(Constants.skuNumber1 === this.skuNumber) {
+                  Constants.onHandQuantity1 = this.oh;
+              }
+              else {
+                Constants.onHandQuantity2 = this.oh;
+              }
+              this.homepage.func();
+             // console.log(this.homepage.messages);
+              // this.homepage.pushMessage(Constants.myMessageConstant);
+              var toasttext, toastspeak;
+            if(Constants.language === "english") {
+              toasttext = "OnHand quantity updated successfully";
+            }else toasttext = "Cantidad en mano actualizada con éxito"
+            this.presentToast(toasttext);
+            if(Constants.language === "english") {
+              this.speak(toasttext,0);
+            } else this.spanish(toasttext,1);
+            }
+
   }
   
 
-  startVoice() {
+  startVoice(): string {
     console.log("speech in modal");
     this.speechRecognition.startListening()
   .subscribe(
     (matches: Array<string>) => {
       this.newOh = matches[0];
-      this.presentConfirm();
+      if(matches[0] === 'cancel' || matches[0] === 'Cancel') {
+        this.cancelUpdation();
+      }
+      else if(matches[0] === 'confirm' || matches[0]==='Confirm') {
+        return 'confirmed';
+      }
+      else {
+        this.newOh = matches[0];
+        this.presentConfirm();
+      }
+      //
       
     },
     (onerror) => console.log('error:', onerror)
   )
 
+  return '';
+
 
   }
 
-  speak(msg) {
+  cancelUpdation() {
+    if(Constants.language === "english") {
+      this.speak("Action is cancelled. You are now redirected to the main page", 0);
+    }
+    else {
+      this.spanish("La acción se cancela. Ahora se le redirige a la página principal",0);
+    }
+    this.dismiss();
+  }
+
+  speak(msg, number): string {
     this.tts.speak(msg)
   .then(() => {if(msg.includes("OnHand quantity updated successfully") ||
-msg.includes("Location details updated successfully" || msg.includes("Detalles de ubicación actualizados con éxito") || msg.includes("Cantidad en mano actualizada con éxito"))) {this.dismiss()} })
+msg.includes("Location details updated successfully" || msg.includes("Detalles de ubicación actualizados con éxito") || msg.includes("Cantidad en mano actualizada con éxito"))) {this.dismiss()};
+if(number === 5) {
+ this.updationSuccessful();
+}
+if(number === 10) {
+  this.startVoice();
+}
+ })
   .catch((reason: any) => console.log(reason));
+  return '';
   }
 
   dismiss() {
@@ -619,15 +736,21 @@ quantityField = "quantityField";
     })
     .then(() => {if(number === 1 ) {this.dismiss()}
     else if(number === 2) 
-    {this.startVoiceForPrint();} })
+    {this.startVoiceForPrint();} 
+if(number === 10) {
+  this.startVoice();
+}  
+})
       .catch((reason: any) => console.log(reason));
       }
   ngAfterViewInit() {
     setTimeout(() => {
       if(Constants.language === "english")
-      this.speak("Please input the quantity for the tag by clicking on the quantity text field");
-      else this.spanish("Ingrese la cantidad de la etiqueta haciendo clic en el campo de texto de la cantidad", 0)
+      this.speak("Please input the quantity for the tag at the next voice input", 10);
+      else this.spanish("Ingrese la cantidad de la etiqueta en la próxima entrada de voz", 10)
     }, 1000);
+
+    //this.startVoice();
     
   }
 
@@ -657,7 +780,7 @@ var toastMessage;
     loading.onDidDismiss(() => {
       this.presentToast();
       if(Constants.language === "english")
-    this.speak("The given tag was printed successfully.");
+    this.speak("The given tag was printed successfully.", 0);
     else this.spanish("La etiqueta dada se imprimió con éxito.", 1);
     });
 
@@ -674,7 +797,7 @@ var toastMessage;
     (matches: Array<string>) => {
       this.quantity = matches[0];
       if(Constants.language === "english")
-      this.speak("Are you ready to print the tag with the given details. If yes, please say print in the next voice input screen or say cancel. You can always print the tag using the print button at the bottom of the page.")
+      this.speak("Are you ready to print the tag with the given details. If yes, please say print in the next voice input screen or say cancel. You can always print the tag using the print button at the bottom of the page.", 0)
       else this.spanish("¿Estás listo para imprimir la etiqueta con los detalles dados? En caso afirmativo, indique imprimir en la siguiente pantalla de entrada de voz o decir cancelar. Siempre puede imprimir la etiqueta usando el botón de imprimir en la parte inferior de la página.",2)
       
     },
@@ -692,7 +815,7 @@ var toastMessage;
 
       } else {
         if(Constants.language === "english")
-          this.speak("print cancelled. You can always print the tag by clicking print button at the bottom of the page.")
+          this.speak("print cancelled. You can always print the tag by clicking print button at the bottom of the page.", 0)
           else this.spanish("impresión cancelada Siempre puede imprimir la etiqueta haciendo clic en el botón Imprimir en la parte inferior de la página.", 0)
       }
     },
@@ -737,7 +860,7 @@ var toastMessage;
           text: con,
           handler: () => {
             if(Constants.language === "english")
-            this.speak("Overhead Tag Printed Successfully");
+            this.speak("Overhead Tag Printed Successfully", 0);
             else this.spanish("Etiqueta de arriba impresa con éxito", 1)
            
             
@@ -746,18 +869,23 @@ var toastMessage;
       ]
     });
     if(Constants.language === "english")
-    this.speak("Are you sure to proceed?");
+    this.speak("Are you sure to proceed?", 0);
     else this.spanish("¿Estás seguro de proceder?", 0)
     alert.present();
   
 
   }
-  speak(msg) {
+  speak(msg, number) {
     this.tts.speak(msg)
   .then(() => {if(msg.includes("The given tag was printed successfully.") || msg.includes("La etiqueta dada se imprimió con éxito.") ) {this.dismiss()}
 else if(msg.includes("Are you ready to print the tag with the given details. If yes, please say print in the next voice input screen or say cancel. You can always print the tag using the print button at the bottom of the page.") ||
 msg.includes("impresión cancelada Siempre puede imprimir la etiqueta haciendo clic en el botón Imprimir en la parte inferior de la página.")) 
-{this.startVoiceForPrint();} })
+{this.startVoiceForPrint();}
+if(number === 10) {
+  this.startVoice();
+}
+
+ })
   .catch((reason: any) => console.log(reason));
   }
 
