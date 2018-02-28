@@ -101,13 +101,13 @@
               </ion-card-header>
               <ion-card-content>
                 <ion-chip>
-                  <ion-label>Change OnHand</ion-label>
+                  <ion-label>{{changeOnHand | translate: format}}</ion-label>
                 </ion-chip>
                 <ion-chip>
-                  <ion-label>Print Tag</ion-label>
+                  <ion-label>{{printOverheadTag | translate: format}}</ion-label>
                 </ion-chip>
                 <ion-chip>
-                  <ion-label>Change Loc</ion-label>
+                  <ion-label>{{changeLocation | translate: format}</ion-label>
                 </ion-chip>
               </ion-card-content>
             </ion-card>
@@ -186,15 +186,15 @@
             {{actionsAvailable | translate: format}} 
           </ion-card-header>
           <ion-card-content>
-            <ion-chip>
-              <ion-label>Change OnHand</ion-label>
-            </ion-chip>
-            <ion-chip>
-              <ion-label>Print Tag</ion-label>
-            </ion-chip>
-            <ion-chip>
-              <ion-label>Change Loc</ion-label>
-            </ion-chip>
+              <ion-chip>
+                  <ion-label>{{changeOnHand | translate: format}}</ion-label>
+                </ion-chip>
+                <ion-chip>
+                  <ion-label>{{printOverheadTag | translate: format}}</ion-label>
+                </ion-chip>
+                <ion-chip>
+                  <ion-label>{{changeLocation | translate: format}</ion-label>
+                </ion-chip>
           </ion-card-content>
         </ion-card>
 

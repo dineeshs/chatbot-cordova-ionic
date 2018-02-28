@@ -51,6 +51,21 @@ export class Translate implements PipeTransform {
         if(value === "Your Message") {
             return "Tu mensaje";
         }
+
+        if(value === "Change OnHand") {
+            return "Cambio en mano"
+
+        }
+
+        if(value === "Print Overhead Tag") {
+            return "Imprimir overhead tag";
+
+        }
+
+        if(value === "Change Location") {
+            return "Cambiar locación";
+
+        }
           
       }
       else {
@@ -96,6 +111,17 @@ export class Translate implements PipeTransform {
     }
 
     if(value === "Your Message") {
+        return value;
+    }
+    if(value === "Change OnHand") {
+        return value;
+    }
+
+    if(value === "Change Location") {
+        return value;
+    }
+
+    if(value === "Print Overhead Tag") {
         return value;
     }
           

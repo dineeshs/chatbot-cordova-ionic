@@ -42,6 +42,9 @@ export class HomePage {
   help='help';
   yourMessage: 'Your Message';
   actionsAvailable = 'Actions Available:';
+  changeOnHand  = 'Change OnHand';
+  printOverheadTag = "Print Overhead Tag";
+  changeLocation = "Change Location";
   @ViewChild(Content) content: Content;
   get format()   { return Constants.language; }
   public question;
@@ -331,7 +334,9 @@ this.slides = statuses;
         }
          else {
           this.messages.push(new Message(response.speech,"bot","","","","","",false));
+          if(Constants.language === "english")
           this.speak(response.speech);
+          else this.spanish(response.speech);
          }
         
          });
@@ -350,10 +355,14 @@ this.slides = statuses;
   }
 
   getBooksWithObservable(question): Observable<any> {
+    var url = '';
+    if(Constants.language === 'english')
+    url = "https://apiai-test-poc.cfapps.io/apiai/getSpeech";
+    else url = "https://apiai-test-poc-spanish.cfapps.io/apiai/getSpeech";
     var body = {
 	"inputText" : ""+question
 };
-        return this.http.post("https://apiai-test-poc.cfapps.io/apiai/getSpeech",body)
+        return this.http.post(url,body)
 		   .map(this.extractData)
 		   .catch(this.handleErrorObservable);
     }
@@ -367,8 +376,11 @@ this.slides = statuses;
 	return Observable.throw(error.message || error);
     }
 
-  startVoice() {
-    this.speechRecognition.startListening()
+  startVoice() {let options;
+    if(Constants.language === 'spanish')
+    options = {language :"es-ES"};
+    else options = {language: "en-US"};
+    this.speechRecognition.startListening(options)
   .subscribe(
     (matches: Array<string>) => {
       this.ask(matches[0]);
