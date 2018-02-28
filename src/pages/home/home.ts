@@ -14,6 +14,7 @@ import { Content } from 'ionic-angular';
 import { ModalController, NavParams, ViewController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { Constants } from './constants'
+import { constants } from 'http2';
 
 declare var ApiAIPromises: any;
 declare var skuNumber: any;
@@ -39,6 +40,7 @@ export class HomePage {
   bulbon = false;
   slides= [];
   help='help';
+  yourMessage: 'Your Message';
   actionsAvailable = 'Actions Available:';
   @ViewChild(Content) content: Content;
   get format()   { return Constants.language; }
@@ -308,7 +310,25 @@ this.slides = statuses;
         this.speak("These are the top available light bulbs in home depot. You can slide over the content to see all the top bulbs available.")
         else this.spanish("Estas son las mejores bombillas disponibles en Home Depot. Puede deslizar sobre el contenido para ver todas las bombillas superiores disponibles.");
          }
+
+         else if(response.speech.includes("overhead")) {
+           Constants.overheadPrintQuantity = response.speech.slice(8);
+           this.openModalPrint({details: "overheadPrint"})
+         }
          
+         else if(response.speech.includes("delta")) {
+          Constants.change = "New OnHands Value";
+          Constants.changeValue = "Change OnHands Value";
+          Constants.overheadPrintQuantity = response.speech.slice(5);
+          this.openModal({details: "overheadPrint"})
+        }
+
+        else if(response.speech.includes("alpha")) {
+          Constants.change = "New Location Value";
+          Constants.changeValue = "Change Location Value";
+          Constants.overheadPrintQuantity = response.speech.slice(5);
+          this.openModal({details: "overheadPrint"})
+        }
          else {
           this.messages.push(new Message(response.speech,"bot","","","","","",false));
           this.speak(response.speech);
@@ -396,6 +416,7 @@ this.slides = statuses;
   location = Constants.currentLocation;
    change = Constants.change;
    changeValue = Constants.changeValue;
+   quantityValueNeeded;
 
   constructor(
     public platform: Platform,
@@ -409,7 +430,8 @@ this.slides = statuses;
   ) {
     this.change = Constants.change;
     this.changeValue = Constants.changeValue;
-    this.message = this.params.get('details');
+    this.quantityValueNeeded = this.params.get('details');
+    this.message = Constants.myMessageConstant;
     this.skuNumber = Constants.currentSkuNumber;
     this.oh = Constants.currentOH;
     this.location = Constants.currentLocation;
@@ -417,24 +439,33 @@ this.slides = statuses;
 
   get format()   { return Constants.language; }
   ngAfterViewInit() {
-    setTimeout(() => {
-      var speech = "Please input the new Location value at the next voice input. If you wish to cancel the updation say cancel";
-    if(Constants.change === "New Location Value") {
-      if(Constants.language === "english")
-      speech = "Please input the new Location value at the next voice input. If you wish to cancel the updation say cancel";
-      else speech = "Ingrese el nuevo valor de ubicación en la siguiente entrada de voz. Si desea cancelar la actualización, indique cancelar";
+
+    if(this.quantityValueNeeded === "overheadPrint") {
+      this.newOh = Constants.overheadPrintQuantity;
+      this.presentConfirm();
+
     }
     else {
+      setTimeout(() => {
+        var speech = "Please input the new Location value at the next voice input. If you wish to cancel the updation say cancel";
+      if(Constants.change === "New Location Value") {
+        if(Constants.language === "english")
+        speech = "Please input the new Location value at the next voice input. If you wish to cancel the updation say cancel";
+        else speech = "Ingrese el nuevo valor de ubicación en la siguiente entrada de voz. Si desea cancelar la actualización, indique cancelar";
+      }
+      else {
+        if(Constants.language === "english")
+        speech = "Please input the new OnHand value at the next voice input. If you wish to cancel the updation say cancel"
+        else speech = "Ingrese el nuevo valor de OnHand en la próxima entrada de voz. Si desea cancelar la actualización, indique cancelar";
+      }
       if(Constants.language === "english")
-      speech = "Please input the new OnHand value at the next voice input. If you wish to cancel the updation say cancel"
-      else speech = "Ingrese el nuevo valor de OnHand en la próxima entrada de voz. Si desea cancelar la actualización, indique cancelar";
+      this.speak(speech, 10);
+      else this.spanish(speech, 10);
+  
+      //this.startVoice();
+      }, 1000);
     }
-    if(Constants.language === "english")
-    this.speak(speech, 10);
-    else this.spanish(speech, 10);
-
-    //this.startVoice();
-    }, 1000);
+    
     
   }
 
@@ -471,6 +502,9 @@ this.slides = statuses;
   
 if(number === 10) {
   this.startVoice();
+}
+if(number ===100) {
+  this.dismiss();
 }
 if(number === 5) {
   this.updationSuccessful();
@@ -583,7 +617,7 @@ if(number === 5) {
       i=Constants.currentLocation;
     } else i = Constants.currentOH;
     if(Constants.language === "english")
-    this.speak("Are you sure to update the value from "+i+ "to "+this.newOh+ "    If yes, please confirm else cancel at the next voice input", 5 );
+    this.speak("Are you sure to update the value from " +i+ "to "+this.newOh+"     "+ "    If yes, please confirm else cancel at the next voice input", 5 );
     else this.spanish("¿Estás seguro de actualizar el valor de ? "+i+"a "+this.newOh+ "     En caso afirmativo, confirme que canceló en la siguiente entrada de voz", 5)
     //alert.present();
     
@@ -665,15 +699,15 @@ if(number === 5) {
 
   cancelUpdation() {
     if(Constants.language === "english") {
-      this.speak("Action is cancelled. You are now redirected to the main page", 0);
+      this.speak("Action is cancelled. You are now redirected to the main page", 100);
     }
     else {
-      this.spanish("La acción se cancela. Ahora se le redirige a la página principal",0);
+      this.spanish("La acción se cancela. Ahora se le redirige a la página principal",100);
     }
-    this.dismiss();
+    
   }
 
-  speak(msg, number): string {
+  speak(msg, number) {
     this.tts.speak(msg)
   .then(() => {if(msg.includes("OnHand quantity updated successfully") ||
 msg.includes("Location details updated successfully" || msg.includes("Detalles de ubicación actualizados con éxito") || msg.includes("Cantidad en mano actualizada con éxito"))) {this.dismiss()}
@@ -681,12 +715,14 @@ if(number === 5) {
   this.startVoice();
  
 }
+if(number ===100) {
+  this.dismiss();
+}
 if(number === 10) {
   this.startVoice();
 }
  })
   .catch((reason: any) => console.log(reason));
-  return '';
   }
 
   dismiss() {
@@ -711,6 +747,7 @@ quantity;
 print;
 printField = "printField";
 quantityField = "quantityField";
+quantityValueNeeded;
   constructor(
     public platform: Platform,
     public params: NavParams,
@@ -722,7 +759,8 @@ quantityField = "quantityField";
     private toastCtrl: ToastController
   ) {
     this.skuNumber = Constants.currentSkuNumber;
-    this.message = this.params.get('details');
+    this.quantityValueNeeded = this.params.get('details');
+    this.message = Constants.myMessageConstant;
     this.image = this.message.image;
     this.quantity = '';
   }
@@ -744,11 +782,22 @@ if(number === 10) {
       .catch((reason: any) => console.log(reason));
       }
   ngAfterViewInit() {
-    setTimeout(() => {
+    if(this.quantityValueNeeded === "overheadPrint") {
+      this.quantity = Constants.overheadPrintQuantity;
+
       if(Constants.language === "english")
-      this.speak("Please input the quantity for the tag at the next voice input", 10);
-      else this.spanish("Ingrese la cantidad de la etiqueta en la próxima entrada de voz", 10)
-    }, 1000);
+      this.speak("Are you ready to print the tag with the given quantity of"+this.quantity+". If yes, please say print in the next voice input screen or say cancel. You can always print the tag using the print button at the bottom of the page.", 15)
+      else this.spanish("¿Estás listo para imprimir la etiqueta con los detalles dados "+this.quantity+"? En caso afirmativo, indique imprimir en la siguiente pantalla de entrada de voz o decir cancelar. Siempre puede imprimir la etiqueta usando el botón de imprimir en la parte inferior de la página.",2)
+
+    }
+    else {
+      setTimeout(() => {
+        if(Constants.language === "english")
+        this.speak("Please input the quantity for the tag at the next voice input", 10);
+        else this.spanish("Ingrese la cantidad de la etiqueta en la próxima entrada de voz", 10)
+      }, 1000);
+    }
+    
 
     //this.startVoice();
     
@@ -797,8 +846,8 @@ var toastMessage;
     (matches: Array<string>) => {
       this.quantity = matches[0];
       if(Constants.language === "english")
-      this.speak("Are you ready to print the tag with the given details. If yes, please say print in the next voice input screen or say cancel. You can always print the tag using the print button at the bottom of the page.", 0)
-      else this.spanish("¿Estás listo para imprimir la etiqueta con los detalles dados? En caso afirmativo, indique imprimir en la siguiente pantalla de entrada de voz o decir cancelar. Siempre puede imprimir la etiqueta usando el botón de imprimir en la parte inferior de la página.",2)
+      this.speak("Are you ready to print the tag with the given quantity of"+this.quantity+". If yes, please say print in the next voice input screen or say cancel. You can always print the tag using the print button at the bottom of the page.", 15)
+      else this.spanish("¿Estás listo para imprimir la etiqueta con los detalles dados "+this.quantity+"? En caso afirmativo, indique imprimir en la siguiente pantalla de entrada de voz o decir cancelar. Siempre puede imprimir la etiqueta usando el botón de imprimir en la parte inferior de la página.",2)
       
     },
     (onerror) => console.log('error:', onerror)
@@ -878,8 +927,7 @@ var toastMessage;
   speak(msg, number) {
     this.tts.speak(msg)
   .then(() => {if(msg.includes("The given tag was printed successfully.") || msg.includes("La etiqueta dada se imprimió con éxito.") ) {this.dismiss()}
-else if(msg.includes("Are you ready to print the tag with the given details. If yes, please say print in the next voice input screen or say cancel. You can always print the tag using the print button at the bottom of the page.") ||
-msg.includes("impresión cancelada Siempre puede imprimir la etiqueta haciendo clic en el botón Imprimir en la parte inferior de la página.")) 
+if(number === 15) 
 {this.startVoiceForPrint();}
 if(number === 10) {
   this.startVoice();

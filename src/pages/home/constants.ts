@@ -16,4 +16,5 @@ export class Constants {
     public static departmentNumber = "D23";
     public static ldap = "DXS8288";
     public static language = "english";
+    public static overheadPrintQuantity;
 }

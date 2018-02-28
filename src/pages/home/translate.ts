@@ -47,6 +47,10 @@ export class Translate implements PipeTransform {
         if(value === "Actions Available:") {
             return "Acciones disponibles:";
         }
+
+        if(value === "Your Message") {
+            return "Tu mensaje";
+        }
           
       }
       else {
@@ -88,6 +92,10 @@ export class Translate implements PipeTransform {
     }
 
     if(value === "Actions Available:") {
+        return value;
+    }
+
+    if(value === "Your Message") {
         return value;
     }
           

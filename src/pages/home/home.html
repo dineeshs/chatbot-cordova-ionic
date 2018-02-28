@@ -181,6 +181,22 @@
           </ion-slide>
           
         </ion-slides>
+        <ion-card>
+          <ion-card-header>
+            {{actionsAvailable | translate: format}} 
+          </ion-card-header>
+          <ion-card-content>
+            <ion-chip>
+              <ion-label>Change OnHand</ion-label>
+            </ion-chip>
+            <ion-chip>
+              <ion-label>Print Tag</ion-label>
+            </ion-chip>
+            <ion-chip>
+              <ion-label>Change Loc</ion-label>
+            </ion-chip>
+          </ion-card-content>
+        </ion-card>
 
   </div>
   
@@ -194,7 +210,7 @@
       <button ion-button class="customBtn" round icon-only item-start (click)="startVoice()">
         <ion-icon name="md-mic"></ion-icon>
       </button>
-        <ion-input type="text" placeholder="Your Message" [(ngModel)]="question" (keyup.enter)="ask(question)"></ion-input>
+        <ion-input type="text" placeholder="{{yourMessage | translate: format}}" [(ngModel)]="question" (keyup.enter)="ask(question)"></ion-input>
         <button ion-button icon-only class="customBtn" round  item-end (click)="ask(question)">
             <ion-icon name="md-send"></ion-icon>
           </button>
