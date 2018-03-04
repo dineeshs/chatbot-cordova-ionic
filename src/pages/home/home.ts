@@ -40,7 +40,7 @@ export class HomePage {
   bulbon = false;
   slides= [];
   help='help';
-  yourMessage: 'Your Message';
+  yourMessage = 'Your Message';
   actionsAvailable = 'Actions Available:';
   changeOnHand  = 'Change OnHand';
   printOverheadTag = "Print Overhead Tag";
